@@ -7,18 +7,33 @@ botaoAdicionar.addEventListener("click",function(event){
 
     var pacienteTr = montaTr(paciente);
 
-    if (!validaPaciente(paciente)){
-      console.log("paciente inválido")
+    var erros = validaPaciente(paciente)
+
+    if (erros.length > 0){
+      exibeMensagensDeErro(erros)
       return; //breaks function
     }
 
     var tabela = document.querySelector("#tabela-pacientes");
 
     tabela.appendChild(pacienteTr);
+    var ul = document.querySelector("#mensagens-erro")
+    ul.innerHTML = ""
 
     form.reset();
   }
 );
+
+function exibeMensagensDeErro(erros){
+  var ul = document.querySelector("#mensagens-erro")
+  ul.innerHTML = ""
+  erros.forEach(function(erro){
+  var li = document.createElement("li");
+    li.textContent = erro;
+    ul.appendChild(li)
+  })
+
+}
 
 function obtemPacienteForm(form){
   var paciente = {
@@ -31,7 +46,7 @@ function obtemPacienteForm(form){
   return paciente;
 }
 
-function montaTr(paciente){
+ function montaTr(paciente){
   var pacienteTr = document.createElement("tr")
   pacienteTr.classList.add("paciente");
 
@@ -52,10 +67,20 @@ function montaTd(dado, classe){
 }
 
 function validaPaciente(paciente){
-  if (validaAltura(paciente.altura && validaPeso(paciente.peso))){
-    return true;
+  var erros = [];
+  if (!validaAltura(paciente.altura)) erros.push("Altura inválida");
+  if (!validaPeso(paciente.peso)) erros.push("Peso inválido");
+  if (paciente.nome.length == 0){
+    erros.push("O nome não pode ser nulo")
   }
-  else {
-    return false;
+  if (paciente.gordura.length == 0){
+    erros.push("Gordura não pode ser nula")
   }
+  if (paciente.peso.length == 0){
+    erros.push("Peso não pode ser nulo")
+  }
+  if (paciente.altura.length == 0){
+    erros.push("Altura não pode ser nula")
+  }
+  return erros;
 }
